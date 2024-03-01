@@ -1,4 +1,4 @@
-#include "../include/edge.hpp"
+#include "edge.hpp"
 
 void sobelEdgeDetection(string inputFile, string outputFile){
      // Load the input image

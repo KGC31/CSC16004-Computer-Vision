@@ -1,9 +1,9 @@
 // main.cpp
 #include <opencv2/opencv.hpp>
 #include <string>
-#include "../include/filter.hpp"
-#include "../include/color.hpp"
-#include "../include/edge.hpp"
+#include "filter.hpp"
+#include "color.hpp"
+#include "edge.hpp"
 
 using namespace cv;
 using namespace std;

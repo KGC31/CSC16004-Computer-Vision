@@ -1,5 +1,5 @@
 // filter.cpp
-#include "../include/filter.hpp"
+#include "filter.hpp"
 
 
 void medFilter(string inFile, string outFile, int c){

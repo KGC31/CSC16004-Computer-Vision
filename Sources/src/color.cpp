@@ -1,4 +1,4 @@
-#include "../include/color.hpp"
+#include "color.hpp"
 
 void rgb2gray(string inputFile, string outputFile){
    // Load a color image
