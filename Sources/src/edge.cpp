@@ -1,55 +1,81 @@
 #include "edge.hpp"
 
-void sobelEdgeDetection(string inputFile, string outputFile){
-     // Load the input image
-    Mat image = imread(inputFile, IMREAD_GRAYSCALE);
+void sobelEdgeDetection(string inputFile, string outputFile) {
+    // Load the input img with grayscale
+    Mat img = imread(inputFile, IMREAD_GRAYSCALE);
 
-    // Check if the image is loaded successfully
-    if (image.empty()) {
-        cerr << "Error: Unable to read the input image." << endl;
+    // Check if the img is loaded successfully
+    if (img.empty()) {
+        cerr << "Error: Unable to read the input img." << endl;
         return;
     }
 
-    // Apply Sobel edge detection
-    Mat sobelX, sobelY;
-    Sobel(image, sobelX, CV_16S, 1, 0, 3);
-    Sobel(image, sobelY, CV_16S, 0, 1, 3);
+    Mat sobel(img.rows, img.cols, CV_32F);
 
-    // Convert the result back to CV_8U
-    Mat sobelX_abs, sobelY_abs;
-    convertScaleAbs(sobelX, sobelX_abs);
-    convertScaleAbs(sobelY, sobelY_abs);
+    // Create gradient matrices to store gradients in x and y directions
+    Mat gradientX(img.rows, img.cols, CV_32F);
+    Mat gradientY(img.rows, img.cols, CV_32F);
 
-    // Combine the gradient images
-    Mat gradient;
-    addWeighted(sobelX_abs, 0.5, sobelY_abs, 0.5, 0, gradient);
+    // Define Sobel kernels
+    float sobelKernelX[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
+    float sobelKernelY[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
+
+    // Apply convolution with Sobel kernels
+    for (int y = 1; y < img.rows - 1; ++y) {
+        for (int x = 1; x < img.cols - 1; ++x) {
+            float sumX = 0, sumY = 0;
+
+            // Compute gradients using Sobel kernels
+            for (int i = -1; i <= 1; ++i) {
+                for (int j = -1; j <= 1; ++j) {
+                    sumX += img.at<uchar>(y + i, x + j) * sobelKernelX[i + 1][j + 1];
+                    sumY += img.at<uchar>(y + i, x + j) * sobelKernelY[i + 1][j + 1];
+                }
+            }
+
+            // Calculate gradient magnitude using the Euclidean distance formula
+            float magnitude = sqrt(sumX * sumX + sumY * sumY);
+
+            // Store the gradient magnitude in the sobel matrix
+            sobel.at<float>(y, x) = magnitude;
+        }
+    }
 
     // Write the result to the output file
-    imwrite(outputFile, gradient);
+    imwrite(outputFile, sobel);
 
     cout << "Edge detection using Sobel operator completed successfully." << endl;
 }
 
 void laplaceEdgeDetection(string inputFile, string outputFile) {
-    // Load the input image
-    Mat image = imread(inputFile, IMREAD_GRAYSCALE);
+    // Load the input img
+    Mat img = imread(inputFile, IMREAD_GRAYSCALE);
 
-    // Check if the image is loaded successfully
-    if (image.empty()) {
-        cerr << "Error: Unable to read the input image." << endl;
+    // Check if the img is loaded successfully
+    if (img.empty()) {
+        cerr << "Error: Unable to read the input img." << endl;
         return;
     }
 
-    // Apply Laplace edge detection
-    Mat laplace;
-    Laplacian(image, laplace, CV_16S, 3);
+    // Define Laplacian kernel
+    float laplacianKernel[3][3] = {{-1, -1, -1}, {-1, 8, -1}, {-1, -1, -1}};
 
-    // Convert the result back to CV_8U
-    Mat laplace_abs;
-    convertScaleAbs(laplace, laplace_abs);
+    // Apply convolution with Laplacian kernel
+    Mat laplace(img.size(), CV_32F);
+    for (int y = 1; y < img.rows - 1; ++y) {
+        for (int x = 1; x < img.cols - 1; ++x) {
+            float sum = 0;
+            for (int i = -1; i <= 1; ++i) {
+                for (int j = -1; j <= 1; ++j) {
+                    sum += img.at<uchar>(y + i, x + j) * laplacianKernel[i + 1][j + 1];
+                }
+            }
+            laplace.at<float>(y, x) = sum;
+        }
+    }
 
     // Write the result to the output file
-    imwrite(outputFile, laplace_abs);
+    imwrite(outputFile, laplace);
 
     cout << "Laplace edge detection completed successfully." << endl;
 }

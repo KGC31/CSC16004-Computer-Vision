@@ -9,10 +9,10 @@
 
 #include "common.hpp"
 
-void medFilter(string inFile, string outFile, int c);
+void medFilter(string inFile, string outFile, int kernelSize);
 
-void avgFilter(string inFile, string outFile, int c);
+void avgFilter(string inFile, string outFile, int kernelSize);
 
-void gaussianFilter(string inFile, string outFile, int c);
+void gaussianFilter(string inFile, string outFile, int kernelSize);
 
 #endif
