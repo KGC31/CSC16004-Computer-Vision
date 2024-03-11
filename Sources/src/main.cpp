@@ -1,13 +1,14 @@
 // main.cpp
 #include <opencv2/opencv.hpp>
 #include <string>
+#include "harris.hpp"
 
 using namespace cv;
 using namespace std;
 
 int main(int argc, char** argv) {
     // Check for the number of arguments
-    if (argc != 4 && argc != 5) {
+    if (argc != 4) {
         cerr << "Usage: " << argv[0] << " -harris <input_file> <output_file>" << endl;
         return 1;
     }
@@ -19,6 +20,7 @@ int main(int argc, char** argv) {
     
     // Check for the input action mode
     if (mode == "-harris") {
+        harrisKeyPointDetection(inFile, outFile);
     } else {
         cerr << "Invalid mode" << endl;
         return 1;
