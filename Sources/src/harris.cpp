@@ -1,16 +1,35 @@
 #include "harris.hpp"
 
+// ----------------------------------------------------------------
+/*
+    CODE DESCRIPTION:
+    The steps of corner detection using Harris algorithm in the function is shown as bellow:
+    1. Convert the image to grayscale
+    2. Apply Gaussian noise elimination to eliminate any distortion
+    3. Compute the gradient of the image using the 3x3 Sobel filter
+    4. Compute the Gaussian window with the size of 3x3 and sigma = 1.0
+    5. Compute the determinant of the image: Mxx, Myy, Mxy
+    6. Compute the Harris score: S = 0.04 * (Mxx + Myy - 2 * Mxy)
+    7. Apply non-maximum suppression to eliminate the corners
+    8. Return the corners
+*/
+// ----------------------------------------------------------------
+
+// ----------------------------------------------------------------
 // Compute the gradient of Ix and Iy of the image
 void computeGradients(const Mat& inputImage, Mat& gradientX, Mat& gradientY) {
     Sobel(inputImage, gradientX, CV_32F, 1, 0, 3);
     Sobel(inputImage, gradientY, CV_32F, 0, 1, 3);
 }
 
+// ----------------------------------------------------------------
+// Get the Gaussian window
 Mat computeGaussianWindow(int windowSize, double sigma) {
     Mat gaussianWindow = getGaussianKernel(windowSize, sigma, CV_32F);
     return gaussianWindow * gaussianWindow.t();
 }
 
+// ----------------------------------------------------------------
 void computeStructureTensor(const Mat& gradientX, const Mat& gradientY, const Mat& window, Mat& Mxx, Mat& Myy, Mat& Mxy) {
     Mxx = gradientX.mul(gradientX);
     Myy = gradientY.mul(gradientY);
@@ -28,10 +47,14 @@ void computeTrace(const Mat& Mxx, const Mat& Myy, Mat& trace) {
     trace = Mxx + Myy;
 }
 
+
 void computeHarrisCornerResponse(const Mat& determinant, const Mat& trace, float k, Mat& cornerResponse) {
+    // R = detM - k*(traceM)^2
     cornerResponse = determinant - k * trace.mul(trace);
 }
 
+// ----------------------------------------------------------------
+// Main function for the implementation of Harris Corner Detection
 void harrisKeyPointDetection(string inFile, string outFile) {
     float k = 0.04; // Harris parameter
     int windowSize = 3; // Window size for Gaussian smoothing
@@ -69,7 +92,9 @@ void harrisKeyPointDetection(string inFile, string outFile) {
 
     // Thresholding corner response to find keypoints
     double maxVal;
+    // Get the local maxmima of the corner response
     minMaxLoc(cornerResponse, nullptr, &maxVal);
+    // Find point with large corner response
     threshold(cornerResponse, cornerResponse, 0.1 * maxVal, 255, THRESH_BINARY);
 
 
