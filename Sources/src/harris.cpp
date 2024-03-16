@@ -1,21 +1,6 @@
 #include "harris.hpp"
 
-// ----------------------------------------------------------------
-/*
-    CODE DESCRIPTION:
-    The steps of corner detection using Harris algorithm in the function is shown as bellow:
-    1. Convert the image to grayscale
-    2. Apply Gaussian noise elimination to eliminate any distortion
-    3. Compute the gradient of the image using the 3x3 Sobel filter
-    4. Compute the Gaussian window with the size of 3x3 and sigma = 1.0
-    5. Compute the determinant of the image: Mxx, Myy, Mxy
-    6. Compute the Harris score: S = 0.04 * (Mxx + Myy - 2 * Mxy)
-    7. Apply non-maximum suppression to eliminate the corners
-    8. Return the corners
-*/
-// ----------------------------------------------------------------
-
-// ----------------------------------------------------------------
+//----------------------------------------------------------------
 // Compute the gradient of Ix and Iy of the image
 void computeGradients(const Mat& inputImage, Mat& gradientX, Mat& gradientY) {
     Sobel(inputImage, gradientX, CV_32F, 1, 0, 3);
@@ -47,7 +32,7 @@ void computeTrace(const Mat& Mxx, const Mat& Myy, Mat& trace) {
     trace = Mxx + Myy;
 }
 
-
+//----------------------------------------------------------------
 void computeHarrisCornerResponse(const Mat& determinant, const Mat& trace, float k, Mat& cornerResponse) {
     // R = detM - k*(traceM)^2
     cornerResponse = determinant - k * trace.mul(trace);
