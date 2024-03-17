@@ -1,29 +1,25 @@
-// main.cpp
 #include <opencv2/opencv.hpp>
-#include <string>
-#include "harris.hpp"
+#include <iostream>
+#include "sift.hpp"
 
 using namespace cv;
 using namespace std;
 
 int main(int argc, char** argv) {
-    // Check for the number of arguments
-    if (argc != 4) {
-        cerr << "Usage: " << argv[0] << " -harris <input_file> <output_file>" << endl;
-        return 1;
+    // Check command line arguments
+    if (argc != 5 || strcmp(argv[1], "-sift") != 0) {
+        cout << "Usage: <Executable file> -sift <TemplateImagePath> <SceneImagePath> <OutputFilePath>" << endl;
+        return -1;
     }
 
-    // Get the arguments from the command line
+    // Parse command line arguments
     string mode = argv[1];
-    string inFile = argv[2];
-    string outFile = argv[3];
-    
-    // Check for the input action mode
-    if (mode == "-harris") {
-        harrisKeyPointDetection(inFile, outFile);
-    } else {
-        cerr << "Invalid mode" << endl;
-        return 1;
+    string objectImagePath = argv[2];
+    string sceneImagePath = argv[3];
+    string outputImagePath = argv[4];
+
+    if(mode == "-sift"){
+        siftKNNMatcher(objectImagePath, sceneImagePath, outputImagePath);
     }
 
     return 0;
