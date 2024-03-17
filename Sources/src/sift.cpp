@@ -1,7 +1,7 @@
 #include "sift.hpp"
 
 void siftKNNMatcher(string objectImagePath, string sceneImagePath, string outputImagePath){
-        // Load images
+    // Load images
     Mat templateImage = imread(objectImagePath, IMREAD_GRAYSCALE);
     Mat sceneImage = imread(sceneImagePath, IMREAD_GRAYSCALE);
 
